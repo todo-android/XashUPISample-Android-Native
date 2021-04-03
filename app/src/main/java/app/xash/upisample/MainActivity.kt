@@ -29,14 +29,14 @@ class MainActivity : AppCompatActivity(), SDKMessageCallback {
         val subId = subInfo.subscriptionId
         sdkManager = SDKManager.getSDKManager(
                 this,
-                "+918800233266",
+                "+918800233266", // from flutter
                 "com.xash.tech",
-                "84521654123456",
+                "84521654123456", // ANDROID_ID or IMEI, for now harcode
             subId.toString(),
-                "OPERATOR NAME", // can be null
+                "OPERATOR NAME", // can be null (can come from telephone)
         false,
-                "IMobile",
-                "GLGOxLn2D8ARCBdyLHkRLMdtAPhLAwWI"
+                "XChange", //correct
+                "GLGOxLn2D8ARCBdyLHkRLMdtAPhLAwWI" // correct
         )
         sdkManager.setSdkMessageCallback(this)
         val cb = object: UltraSDKCallBack {
@@ -50,7 +50,14 @@ class MainActivity : AppCompatActivity(), SDKMessageCallback {
             }
 
         }
-        sdkManager.invokeSDK("kghkdsghsjglsgk", "+919643339706", cb)
+
+        sdkManager.invokeSDK(
+            "XCH", // correct
+            "+919643339706", // VMN (providing soon)
+            cb)
+
+        // TODO: sdkManager.payToVPA()
+        // TODO: sdkManager.storeAccountDetails() - create account
     }
 
     override fun nextMsgForProgress(p0: String?) {
