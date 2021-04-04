@@ -31,14 +31,14 @@ class MainActivity : AppCompatActivity(), SDKMessageCallback, UltraSDKCallBack {
         val subId = subInfo.subscriptionId
         sdkManager = SDKManager.getSDKManager(
             this,
-            "+917355074244", // from flutter
+            "8595352647", // from flutter
             "com.xash.tech",
-            "84521654123456", // ANDROID_ID or IMEI, for now harcode
+            "84521654864135", // ANDROID_ID or IMEI, for now harcode
             subId.toString(),
             "OPERATOR NAME", // can be null (can come from telephone)
             false,
             "XCHANGE", //correct
-            "GLGOxLn2D8ARCBdyLHkRLMdtAPhLAwWI" // correct
+            "xPiJGRzowAVe0rU5X2mKNEu3J7ZF3gHs" // correct
         )
         sdkManager.setSdkMessageCallback(this)
 
@@ -64,6 +64,10 @@ class MainActivity : AppCompatActivity(), SDKMessageCallback, UltraSDKCallBack {
     override fun onResponse(response: USDKResponse) {
         Log.e("RESPONSE", "$response")
         Log.e("RESPONSE", "${RequestCodes.AUTHENTICATION.requestCode}")
+        val req = GetProfileIdReq()
+        val reqCode = RequestCodes.GET_PROFILE_ID.requestCode
+        sdkManager.getProfileId(req, reqCode, this);
+
         if (response.reqCode.equals(RequestCodes.
             AUTHENTICATION.requestCode)) {
             if (response.response.equals(ErrorCodes.U200.errorCode)) {
@@ -77,6 +81,7 @@ class MainActivity : AppCompatActivity(), SDKMessageCallback, UltraSDKCallBack {
             if (response.response.equals("SMS Success", true)) {
                 Log.e("INTITATE", "$response")
                 sdkManager.requestForDeviceBinding()
+
                 Toast.makeText(this, response.response, Toast.LENGTH_SHORT).show();
             }
         }
