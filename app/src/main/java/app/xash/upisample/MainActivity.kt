@@ -2,6 +2,7 @@ package app.xash.upisample
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.telephony.SubscriptionManager
 import android.util.Log
@@ -10,10 +11,13 @@ import androidx.appcompat.app.AppCompatActivity
 import com.icici.ultrasdk.AdaptersAndCallbacks.UltraSDKCallBack
 import com.icici.ultrasdk.ErrorCodes.ErrorCodes
 import com.icici.ultrasdk.ErrorCodes.RequestCodes
+import com.icici.ultrasdk.Models.Accounts
 import com.icici.ultrasdk.Models.USDKResponse
+import com.icici.ultrasdk.RequestModels.GetProfileDetailsReq
 import com.icici.ultrasdk.RequestModels.GetProfileIdReq
 import com.icici.ultrasdk.SDKManager
 import com.icici.ultrasdk.SDKMessageCallback
+
 
 class MainActivity : AppCompatActivity(), SDKMessageCallback, UltraSDKCallBack {
     lateinit var sdkManager: SDKManager
@@ -29,22 +33,11 @@ class MainActivity : AppCompatActivity(), SDKMessageCallback, UltraSDKCallBack {
             getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
         val subInfo = subscriptionManager.getActiveSubscriptionInfoForSimSlotIndex(0)
         val subId = subInfo.subscriptionId
-        sdkManager = SDKManager.getSDKManager(
-            this,
-            "8595352647", // from flutter
-            "com.xash.tech",
-            "84521654864135", // ANDROID_ID or IMEI, for now harcode
-            subId.toString(),
-            "OPERATOR NAME", // can be null (can come from telephone)
-            false,
-            "XCHANGE", //correct
-            "xPiJGRzowAVe0rU5X2mKNEu3J7ZF3gHs" // correct
-        )
+        SDKMan.initialize(this, subId.toString())
+        sdkManager = SDKMan.sdk
         sdkManager.setSdkMessageCallback(this)
-
-
         sdkManager.invokeSDK(
-            "XCH", // correct
+            "XCH TRB", // correct
             "+919282123345", // VMN (providing soon)
             this
         )
@@ -64,25 +57,48 @@ class MainActivity : AppCompatActivity(), SDKMessageCallback, UltraSDKCallBack {
     override fun onResponse(response: USDKResponse) {
         Log.e("RESPONSE", "$response")
         Log.e("RESPONSE", "${RequestCodes.AUTHENTICATION.requestCode}")
-        val req = GetProfileIdReq()
-        val reqCode = RequestCodes.GET_PROFILE_ID.requestCode
-        sdkManager.getProfileId(req, reqCode, this);
-
-        if (response.reqCode.equals(RequestCodes.
-            AUTHENTICATION.requestCode)) {
+        if (response.reqCode.equals(
+                RequestCodes.AUTHENTICATION.requestCode
+            )
+        ) {
             if (response.response.equals(ErrorCodes.U200.errorCode)) {
                 //calling service to get profile Id
                 val req = GetProfileIdReq()
                 val reqCode = RequestCodes.GET_PROFILE_ID.requestCode
-                sdkManager.getProfileId(req, reqCode, this);
-                Toast.makeText(this, response.response, Toast.LENGTH_SHORT).show()
+                sdkManager.getProfileId(req, reqCode, this)
+//                if(response.response.equals("Authentication done", true)){
+//                    startActivity(Intent(this, PayVPActivity::class.java))
+//                    finish()
+//                }
+            }
+        } else if (response.reqCode.equals(RequestCodes.GET_PROFILE_ID.requestCode, true)) {
+            if (response.response.equals("0") && response.userProfile != null &&
+                !response.userProfile.equals("")
+            ) {
+                val profileId = response.userProfile
+                //calling service to get profile details - gives existing list of accounts and VPAs tagged to them.
+                val req = GetProfileDetailsReq()
+                val reqCode = RequestCodes.GET_PROFILE_DETAILS.requestCode
+                req.profileId = profileId
+                sdkManager.getProfileDetails(req, reqCode, this)
+            }
+        } else if (response.reqCode.equals(RequestCodes.GET_PROFILE_DETAILS.requestCode, true)) {
+            if (response.response
+                    .equals("0") && response.mobileAppData != null && response.mobileAppData
+                    .details != null &&
+                response.mobileAppData.details.accounts != null
+            ) {
+                //calling service to get profile details - gives existing list of accounts and VPAs tagged to them.
+                SDKMan.setAccountList(response.mobileAppData.details.accounts as ArrayList<Accounts>)
+                startActivity(Intent(this, PayVPActivity::class.java))
+                finish()
             }
         } else if (response.reqCode.equals(RequestCodes.SEND_SMS.requestCode, true)) {
             if (response.response.equals("SMS Success", true)) {
                 Log.e("INTITATE", "$response")
                 sdkManager.requestForDeviceBinding()
 
-                Toast.makeText(this, response.response, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, response.response, Toast.LENGTH_SHORT).show()
             }
         }
     }
