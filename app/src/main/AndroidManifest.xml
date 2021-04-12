@@ -17,7 +17,7 @@
             android:theme="@style/Theme.XashUPISample">
         <activity
                 android:name=".PayVPActivity"
-                android:exported="true"></activity>
+                android:exported="true" />
         <activity
                 android:name=".MainActivity2"
                 android:exported="true" />

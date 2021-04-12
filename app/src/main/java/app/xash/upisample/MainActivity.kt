@@ -24,16 +24,21 @@ class MainActivity : AppCompatActivity(), SDKMessageCallback, UltraSDKCallBack {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        checkPermissionForSms()
         initSDK()
+    }
+
+    private fun checkPermissionForSms() {
+
     }
 
     @SuppressLint("MissingPermission")
     fun initSDK() {
         val subscriptionManager =
             getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
-        val subInfo = subscriptionManager.getActiveSubscriptionInfoForSimSlotIndex(0)
+        val subInfo = subscriptionManager.getActiveSubscriptionInfoForSimSlotIndex(1)
         val subId = subInfo.subscriptionId
-        SDKMan.initialize(this, subId.toString())
+        SDKMan.initialize(this, subId.toString(), subInfo.number)
         sdkManager = SDKMan.sdk
         sdkManager.setSdkMessageCallback(this)
         sdkManager.invokeSDK(
@@ -41,9 +46,6 @@ class MainActivity : AppCompatActivity(), SDKMessageCallback, UltraSDKCallBack {
             "+919282123345", // VMN (providing soon)
             this
         )
-
-        // TODO: sdkManager.payToVPA()
-        // TODO: sdkManager.storeAccountDetails() - create account
     }
 
     override fun nextMsgForProgress(p0: String?) {
@@ -57,6 +59,7 @@ class MainActivity : AppCompatActivity(), SDKMessageCallback, UltraSDKCallBack {
     override fun onResponse(response: USDKResponse) {
         Log.e("RESPONSE", "$response")
         Log.e("RESPONSE", "${RequestCodes.AUTHENTICATION.requestCode}")
+
         if (response.reqCode.equals(
                 RequestCodes.AUTHENTICATION.requestCode
             )
@@ -81,6 +84,9 @@ class MainActivity : AppCompatActivity(), SDKMessageCallback, UltraSDKCallBack {
                 val reqCode = RequestCodes.GET_PROFILE_DETAILS.requestCode
                 req.profileId = profileId
                 sdkManager.getProfileDetails(req, reqCode, this)
+            } else if (response.response.equals("1") && response.userProfile.isNullOrEmpty()) {
+                startActivity(Intent(this, MainActivity2::class.java))
+                finish()
             }
         } else if (response.reqCode.equals(RequestCodes.GET_PROFILE_DETAILS.requestCode, true)) {
             if (response.response

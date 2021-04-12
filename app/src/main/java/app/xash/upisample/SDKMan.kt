@@ -10,10 +10,10 @@ object SDKMan {
     private var accountList = arrayListOf<Accounts>()
     private var vpaList = arrayListOf<String>()
 
-    fun initialize(context: Context, subId: String) {
+    fun initialize(context: Context, subId: String, number: String) {
         INSTANCE = SDKManager.getSDKManager(
             context.applicationContext,
-            "8595352647", // from flutter
+            "9582054664", // from flutter
             "com.xash.tech",
             "84521654864135", // ANDROID_ID or IMEI, for now harcode
             subId,

@@ -9,28 +9,15 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import app.xash.upisample.databinding.ActivityMain2Binding
 import com.icici.ultrasdk.AdaptersAndCallbacks.UltraSDKCallBack
+import com.icici.ultrasdk.ErrorCodes.ErrorCodes
 import com.icici.ultrasdk.ErrorCodes.RequestCodes
 import com.icici.ultrasdk.Models.Accounts
 import com.icici.ultrasdk.Models.Providers
 import com.icici.ultrasdk.Models.USDKResponse
-import com.icici.ultrasdk.RequestModels.CheckAvailabilityReq
-import com.icici.ultrasdk.RequestModels.ListAccounsReq
-import com.icici.ultrasdk.RequestModels.ListAccountProviderReq
+import com.icici.ultrasdk.RequestModels.*
 import com.icici.ultrasdk.SDKManager
 import com.icici.ultrasdk.SDKManager.reqCode
 import java.util.*
-import com.icici.ultrasdk.ErrorCodes.ErrorCodes
-
-import com.icici.ultrasdk.SDKManager.reqCode
-
-import com.icici.ultrasdk.RequestModels.GenerateOTPReq
-
-import com.icici.ultrasdk.RequestModels.StoreAccountDetailsReq
-
-import com.icici.ultrasdk.RequestModels.AddAccountReq
-
-
-
 
 
 class MainActivity2 : AppCompatActivity(), UltraSDKCallBack, AdapterView.OnItemSelectedListener {
@@ -75,60 +62,60 @@ class MainActivity2 : AppCompatActivity(), UltraSDKCallBack, AdapterView.OnItemS
     private fun createVPA() {
 
 
-            reqCode = RequestCodes.ADD_ACCOUNT.requestCode
-            val req = AddAccountReq()
-            req.selectedAccount = selectedAccount
-            req.accountProvider = selectedProvider.id.toString() + ""
-            req.payerVa = binding.textInputLayout.editText?.getText().toString()
-            req.cardDigits = binding.cardInputLayout.editText?.getText().toString()
-            req.expiryDate = binding.dateInputLayout.editText?.getText().toString()
-            req.accountType = selectedAccount.accountType
-            req.defaultCredit = "D"
-            req.defaultDebit = "D"
-            if (req.selectedAccount != null) {
-                if (req.selectedAccount.mbeba == "Y") {
-                    //AddAccount Process handle
-                    val storeAccountDetailsReq = StoreAccountDetailsReq()
-                    storeAccountDetailsReq.accountNumber =
-                        req.selectedAccount.accRefNumber //actual no.
-                    storeAccountDetailsReq.accountProvider = req.accountProvider
-                    storeAccountDetailsReq.ifsc = req.selectedAccount.ifsc
-                    storeAccountDetailsReq.mmid = req.selectedAccount.mmid
-                    storeAccountDetailsReq.name = req.selectedAccount.name
-                    storeAccountDetailsReq.va = req.payerVa
-                    storeAccountDetailsReq.accountType = req.selectedAccount.accountType
-                    storeAccountDetailsReq.accountType = ("SAVINGS");
-                    storeAccountDetailsReq.defaultDebit = "D"
-                    storeAccountDetailsReq.defaultCredit = "D"
-                    storeAccountDetailsReq.seqNo = getSeqNumber()
-                    sdkManager.storeAccountDetails(
-                        storeAccountDetailsReq,
-                        reqCode,
-                        this,
-                        req
-                    )
-                } else {
-                    //Generate OTP Process handle
-                    val generateOTPReq = GenerateOTPReq()
-                    generateOTPReq.accountNumber = req.selectedAccount.accRefNumber //actual no.
-                    generateOTPReq.accountProvider = req.accountProvider
-                    generateOTPReq.ifsc = req.selectedAccount.ifsc
-                    generateOTPReq.payerName = req.selectedAccount.name
-                    generateOTPReq.payerVa = req.payerVa
-                    generateOTPReq.seqNo = getSeqNumber()
-                    sdkManager.generateOTPForVpaCreation(
-                        generateOTPReq,
-                        reqCode,
-                        req,
-                        this
-                    )
-                }
+        reqCode = RequestCodes.ADD_ACCOUNT.requestCode
+        val req = AddAccountReq()
+        req.selectedAccount = selectedAccount
+        req.accountProvider = selectedProvider.id.toString() + ""
+        req.payerVa = binding.textInputLayout.editText?.getText().toString()
+        req.cardDigits = binding.cardInputLayout.editText?.getText().toString()
+        req.expiryDate = binding.dateInputLayout.editText?.getText().toString()
+        req.accountType = selectedAccount.accountType ?: "SAVINGS"
+        req.defaultCredit = "D"
+        req.defaultDebit = "D"
+        if (req.selectedAccount != null) {
+            if (req.selectedAccount.mbeba == "Y") {
+                //AddAccount Process handle
+                val storeAccountDetailsReq = StoreAccountDetailsReq()
+                storeAccountDetailsReq.accountNumber =
+                    req.selectedAccount.accRefNumber //actual no.
+                storeAccountDetailsReq.accountProvider = req.accountProvider
+                storeAccountDetailsReq.ifsc = req.selectedAccount.ifsc
+                storeAccountDetailsReq.mmid = req.selectedAccount.mmid
+                storeAccountDetailsReq.name = req.selectedAccount.name
+                storeAccountDetailsReq.va = req.payerVa
+                storeAccountDetailsReq.accountType = req.selectedAccount.accountType
+                storeAccountDetailsReq.accountType = ("SAVINGS");
+                storeAccountDetailsReq.defaultDebit = "D"
+                storeAccountDetailsReq.defaultCredit = "D"
+                storeAccountDetailsReq.seqNo = getSeqNumber()
+                sdkManager.storeAccountDetails(
+                    storeAccountDetailsReq,
+                    reqCode,
+                    this,
+                    req
+                )
             } else {
-                val response = USDKResponse()
-                response.reqCode = reqCode
-                response.response = ErrorCodes.U105.errorCode
-                this.onFailure(response, null)
+                //Generate OTP Process handle
+                val generateOTPReq = GenerateOTPReq()
+                generateOTPReq.accountNumber = req.selectedAccount.accRefNumber //actual no.
+                generateOTPReq.accountProvider = req.accountProvider
+                generateOTPReq.ifsc = req.selectedAccount.ifsc
+                generateOTPReq.payerName = req.selectedAccount.name
+                generateOTPReq.payerVa = req.payerVa
+                generateOTPReq.seqNo = getSeqNumber()
+                sdkManager.generateOTPForVpaCreation(
+                    generateOTPReq,
+                    reqCode,
+                    req,
+                    this
+                )
             }
+        } else {
+            val response = USDKResponse()
+            response.reqCode = reqCode
+            response.response = ErrorCodes.U105.errorCode
+            this.onFailure(response, null)
+        }
 
     }
 
