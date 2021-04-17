@@ -13,7 +13,7 @@ object SDKMan {
     fun initialize(context: Context, subId: String, number: String) {
         INSTANCE = SDKManager.getSDKManager(
             context.applicationContext,
-            "9582054664", // from flutter
+            number.takeLast(10), // from flutter
             "com.xash.tech",
             "84521654864135", // ANDROID_ID or IMEI, for now harcode
             subId,

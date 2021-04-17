@@ -8,6 +8,7 @@ import android.telephony.SubscriptionManager
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import app.xash.upisample.databinding.ActivityMainBinding
 import com.icici.ultrasdk.AdaptersAndCallbacks.UltraSDKCallBack
 import com.icici.ultrasdk.ErrorCodes.ErrorCodes
 import com.icici.ultrasdk.ErrorCodes.RequestCodes
@@ -21,9 +22,13 @@ import com.icici.ultrasdk.SDKMessageCallback
 
 class MainActivity : AppCompatActivity(), SDKMessageCallback, UltraSDKCallBack {
     lateinit var sdkManager: SDKManager
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+
+        setContentView(binding.root)
         checkPermissionForSms()
         initSDK()
     }
@@ -36,7 +41,7 @@ class MainActivity : AppCompatActivity(), SDKMessageCallback, UltraSDKCallBack {
     fun initSDK() {
         val subscriptionManager =
             getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
-        val subInfo = subscriptionManager.getActiveSubscriptionInfoForSimSlotIndex(1)
+        val subInfo = subscriptionManager.getActiveSubscriptionInfoForSimSlotIndex(0)
         val subId = subInfo.subscriptionId
         SDKMan.initialize(this, subId.toString(), subInfo.number)
         sdkManager = SDKMan.sdk
@@ -85,8 +90,12 @@ class MainActivity : AppCompatActivity(), SDKMessageCallback, UltraSDKCallBack {
                 req.profileId = profileId
                 sdkManager.getProfileDetails(req, reqCode, this)
             } else if (response.response.equals("1") && response.userProfile.isNullOrEmpty()) {
-                startActivity(Intent(this, MainActivity2::class.java))
-                finish()
+                binding.button2.let {
+                    it.isEnabled = true
+                    it.setOnClickListener {
+                        startActivity(Intent(this, MainActivity2::class.java))
+                    }
+                }
             }
         } else if (response.reqCode.equals(RequestCodes.GET_PROFILE_DETAILS.requestCode, true)) {
             if (response.response
@@ -96,8 +105,12 @@ class MainActivity : AppCompatActivity(), SDKMessageCallback, UltraSDKCallBack {
             ) {
                 //calling service to get profile details - gives existing list of accounts and VPAs tagged to them.
                 SDKMan.setAccountList(response.mobileAppData.details.accounts as ArrayList<Accounts>)
-                startActivity(Intent(this, PayVPActivity::class.java))
-                finish()
+                binding.button3.let {
+                    it.isEnabled = true
+                    it.setOnClickListener {
+                        startActivity(Intent(this, PayVPActivity::class.java))
+                    }
+                }
             }
         } else if (response.reqCode.equals(RequestCodes.SEND_SMS.requestCode, true)) {
             if (response.response.equals("SMS Success", true)) {

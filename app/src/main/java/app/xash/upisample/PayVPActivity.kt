@@ -12,10 +12,7 @@ import com.icici.ultrasdk.AdaptersAndCallbacks.UltraSDKCallBack
 import com.icici.ultrasdk.ErrorCodes.RequestCodes
 import com.icici.ultrasdk.Models.Accounts
 import com.icici.ultrasdk.Models.USDKResponse
-import com.icici.ultrasdk.RequestModels.ListAccounsReq
-import com.icici.ultrasdk.RequestModels.ListCustomerAccountReq
-import com.icici.ultrasdk.RequestModels.PayToVirtualAccountReq
-import com.icici.ultrasdk.RequestModels.ValidateVirtualAddressReq
+import com.icici.ultrasdk.RequestModels.*
 import com.icici.ultrasdk.SDKManager
 
 
@@ -47,6 +44,23 @@ class PayVPActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, U
 
             req.virtualAddress = binding.vpaInputLayout.editText?.text.toString() //to vpa
             sdkManager.validateVPA(req, reqCode, this)
+        }
+
+
+        binding.button5.setOnClickListener {
+            checkNotNull(selectedAccount)
+            val reqCode = RequestCodes.BALANCE_ENQUIRY.requestCode
+
+            val req = CheckBalanceReq()
+            req.accountProvider = "74"
+            req.selectedAccount = selectedAccount
+            req.showStatus = "N" //optional
+
+            req.virtualAddress = vpa
+            req.accountType = "SAVINGS"
+            req.seqNo = SDKMan.getSeqNumber()
+
+            sdkManager.balanceEnquiry(req, reqCode, this)
         }
         binding.vpaSpinner.onItemSelectedListener = this
     }
