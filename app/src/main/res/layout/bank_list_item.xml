@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <TextView
+            android:id="@+id/bank_list_name_text_view"
+            style=""
+            android:drawablePadding="16dp"
+            android:gravity="center_vertical"
+            android:layout_marginHorizontal="16dp"
+            android:layout_width="match_parent"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:layout_height="wrap_content"
+            app:drawableStartCompat="@drawable/ic_bank"
+            tools:text="Ahmednagar Merchants Cooperative Bank Ltd" />
+
+</LinearLayout>
