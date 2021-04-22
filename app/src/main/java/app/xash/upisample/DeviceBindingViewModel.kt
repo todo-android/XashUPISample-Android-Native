@@ -3,28 +3,26 @@ package app.xash.upisample
 import android.content.Context
 import android.telephony.SubscriptionInfo
 import android.util.Log
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import app.xash.upisample.SDKMan.getSeqNumber
 import com.icici.ultrasdk.AdaptersAndCallbacks.UltraSDKCallBack
+import com.icici.ultrasdk.ErrorCodes.RequestCodes
+import com.icici.ultrasdk.Models.Providers
 import com.icici.ultrasdk.Models.USDKResponse
+import com.icici.ultrasdk.RequestModels.ListAccountProviderReq
 import com.icici.ultrasdk.SDKManager
 import com.icici.ultrasdk.SDKMessageCallback
 
 class DeviceBindingViewModel : ViewModel(), UltraSDKCallBack, SDKMessageCallback {
 
-    lateinit var sdkManager: SDKManager
+    private var sdkManager: SDKManager
     private val errorLiveData = MutableLiveData<String>()
     private val responseLiveData = MutableLiveData<ResponseState.Success>()
-    val result = MediatorLiveData<ResponseState>()
+    val providers = MutableLiveData<List<Providers>>()
 
     init {
-        result.addSource(errorLiveData) {
-            result.value = ResponseState.Error(it)
-        }
-        result.addSource(responseLiveData) {
-            result.value = it
-        }
+        sdkManager = SDKMan.sdk
     }
 
     fun initiateSDK(context: Context, subInfo: SubscriptionInfo) {
@@ -32,20 +30,25 @@ class DeviceBindingViewModel : ViewModel(), UltraSDKCallBack, SDKMessageCallback
         sdkManager = SDKMan.sdk
         sdkManager.setSdkMessageCallback(this)
         sdkManager.invokeSDK(
-            "XCH", // correct
-            "+919643339706", // VMN (providing soon)
+            "XCH TRB", // correct
+            "+919282123345", // VMN (providing soon)
             this
         )
-//        sdkManager.listAccountProvider(
-//            SDKMan.getAccountRequest().second,
-//            SDKMan.getAccountRequest().first,
-//            this
-//        )
     }
 
-    override fun onResponse(res: USDKResponse?) {
+    fun fetchBankProviders() {
+        val reqCode = RequestCodes.LIST_ACCOUNT_PROVIDER.requestCode
+        val req = ListAccountProviderReq()
+        req.seqNo = getSeqNumber()
+        sdkManager.listAccountProvider(req, reqCode, this)
+    }
+
+    override fun onResponse(res: USDKResponse) {
         Log.e("UPI", "Response Success : $res")
-        responseLiveData.value = res?.let { ResponseState.Success(it.reqCode, it.response) }
+//        responseLiveData.value = res?.let { ResponseState.Success(it.reqCode, it.response) }
+        if (res.reqCode == RequestCodes.LIST_ACCOUNT_PROVIDER.requestCode) {
+            providers.postValue(res.mobileAppData.details.providers)
+        }
     }
 
     override fun onFailure(res: USDKResponse?, err: Throwable?) {

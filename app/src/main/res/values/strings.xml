@@ -6,4 +6,6 @@
     <string name="permission_not_available">Permission not available</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="close_screen">close</string>
+    <string name="select_your_bank_heading_text">Select your bank</string>
 </resources>

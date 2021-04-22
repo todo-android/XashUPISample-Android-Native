@@ -7,37 +7,38 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import app.xash.upisample.databinding.BankListItemBinding
-import com.icici.ultrasdk.Models.Accounts
+import com.icici.ultrasdk.Models.Providers
 
 class BankAccountListAdapter :
-    ListAdapter<Accounts, BankAccountListAdapter.ItemViewholder>(DiffCallback()) {
+    ListAdapter<Providers, BankAccountListAdapter.ItemViewHolder>(object :
+        DiffUtil.ItemCallback<Providers>() {
+        override fun areItemsTheSame(oldItem: Providers, newItem: Providers): Boolean {
+            return oldItem.id == newItem.id
+        }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewholder {
+        override fun areContentsTheSame(oldItem: Providers, newItem: Providers): Boolean {
+            return oldItem.equals(newItem)
+        }
+    }) {
+    var itemClick: ((bank: Providers) -> Unit) = {}
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val binding =
             BankListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
-        return ItemViewholder(binding)
+        return ItemViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: ItemViewholder, position: Int) {
+    override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
-    class ItemViewholder(itemView: BankListItemBinding) : RecyclerView.ViewHolder(itemView.root) {
-        fun bind(item: Accounts) = with(itemView) {
-
-            setOnClickListener {
+    inner class ItemViewHolder(private val binding: BankListItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: Providers) {
+            binding.bankListNameTextView.text = item.accountProvider
+            binding.root.setOnClickListener {
+                itemClick.invoke(item)
             }
         }
-    }
-}
-
-class DiffCallback : DiffUtil.ItemCallback<Accounts>() {
-    override fun areItemsTheSame(oldItem: Accounts, newItem: Accounts): Boolean {
-        return oldItem.account == newItem.account
-    }
-
-    override fun areContentsTheSame(oldItem: Accounts, newItem: Accounts): Boolean {
-        return oldItem.equals(newItem)
     }
 }
