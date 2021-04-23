@@ -4,12 +4,16 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../layout/custom_preview.xml" value="0.39479166666666665" />
+        <entry key="app/src/main/res/drawable/download_states.xml" value="0.31959629941127" />
+        <entry key="app/src/main/res/drawable/ic_correct_circle_small.xml" value="0.31959629941127" />
+        <entry key="app/src/main/res/font/montserrat.xml" value="0.33974358974358976" />
         <entry key="app/src/main/res/layout/activity_add_vpa.xml" value="1.0" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.34814814814814815" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.3008254027738589" />
         <entry key="app/src/main/res/layout/activity_main2.xml" value="0.31648936170212766" />
         <entry key="app/src/main/res/layout/activity_pay_vpactivity.xml" value="0.3484375" />
         <entry key="app/src/main/res/layout/bank_list_item.xml" value="0.37552083333333336" />
         <entry key="app/src/main/res/layout/select_bank_fragment.xml" value="0.30811965811965814" />
+        <entry key="app/src/main/res/layout/upi_footer.xml" value="0.30811965811965814" />
       </map>
     </option>
   </component>

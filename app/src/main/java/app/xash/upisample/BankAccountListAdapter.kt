@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import app.xash.upisample.databinding.BankListItemBinding
 import com.icici.ultrasdk.Models.Providers
 
-class BankAccountListAdapter :
+class BankAccountListAdapter(val itemClick: ((bank: Providers) -> Unit) = {}) :
     ListAdapter<Providers, BankAccountListAdapter.ItemViewHolder>(object :
         DiffUtil.ItemCallback<Providers>() {
         override fun areItemsTheSame(oldItem: Providers, newItem: Providers): Boolean {
@@ -20,7 +20,7 @@ class BankAccountListAdapter :
             return oldItem.equals(newItem)
         }
     }) {
-    var itemClick: ((bank: Providers) -> Unit) = {}
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val binding =
             BankListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
