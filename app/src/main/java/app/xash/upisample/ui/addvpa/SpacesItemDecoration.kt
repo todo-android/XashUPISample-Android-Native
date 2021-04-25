@@ -1,4 +1,4 @@
-package app.xash.upisample.addvpa
+package app.xash.upisample.ui.addvpa
 
 import android.graphics.Rect
 import android.view.View

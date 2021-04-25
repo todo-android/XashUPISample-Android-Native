@@ -15,4 +15,6 @@
     <string name="link_account">Link Account</string>
     <string name="sending_sms">Sending SMS</string>
     <string name="please_do_not_close_the_app_while_the_nprocess_completes">Please do not close the app while the \nprocess completes</string>
+    <string name="select_sim">Select SIM</string>
+    <string name="select_the_sim_linked_with_your_bank_account">Select the sim linked with your bank account</string>
 </resources>

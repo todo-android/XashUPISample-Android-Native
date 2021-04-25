@@ -1,16 +1,16 @@
-package app.xash.upisample
+package app.xash.upisample.ui.addvpa
 
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.add
 import androidx.fragment.app.commit
-import app.xash.upisample.addvpa.SelectBankFragment
+import app.xash.upisample.R
 import app.xash.upisample.databinding.ActivityAddVpaBinding
 
 class AddVpaActivity : AppCompatActivity() {
 
-    val viewModel: DeviceBindingViewModel by viewModels()
+    val viewModel: AddVpaViewModel by viewModels()
     lateinit var binding: ActivityAddVpaBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,4 +25,5 @@ class AddVpaActivity : AppCompatActivity() {
             }
         }
     }
+
 }

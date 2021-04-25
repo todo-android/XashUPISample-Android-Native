@@ -1,4 +1,4 @@
-package app.xash.upisample.addvpa
+package app.xash.upisample.ui.addvpa
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,12 +9,11 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.xash.upisample.BankAccountListAdapter
-import app.xash.upisample.DeviceBindingViewModel
 import app.xash.upisample.databinding.SelectBankFragmentBinding
 
 class SelectBankFragment : Fragment() {
     private lateinit var binding: SelectBankFragmentBinding
-    private val viewModel: DeviceBindingViewModel by activityViewModels()
+    private val viewModel: AddVpaViewModel by activityViewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
